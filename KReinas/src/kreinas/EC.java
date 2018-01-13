@@ -76,6 +76,8 @@ public class EC {
         population[0].evaluate();
         worstValue=population[0].fitness;
         worstQueen=bestQueen=0;
+        worstValue=population[0].fitness;
+        worstQueen=bestQueen=0;
         bestValue=population[0].fitness;
         for  (int i = 1; i < size; i++) 
         {
