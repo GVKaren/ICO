@@ -239,27 +239,7 @@ public class EC {
         //Se prepara el arreglo de los elegidos
         Queen[] Selected = new Queen[randSel];
         Random random = new Random();
-        int chosen, limit, best1=-(k*k), best2=-(k*k); //Inidice del individuo seleecionado y
-                           //el tamano de las secciones
-        //Para evitar repetidos, se escogera un aletorio por secciones
-        limit= (int)(size/randSel);
-        Queen Mom = new Queen(k);
-        Queen Dad = new Queen(k);
-        for (int i=0; i<randSel; i++)
-        {
-            chosen= random.nextInt(limit)+limit*i;
-            Selected[i]=population[chosen];
-            if (Selected[i].fitness>best1)
-            {
-                best1=Selected[i].fitness;
-                Mom=Selected[i];
-            }   
-            else if (Selected[i].fitness>best2)
-            {
-                best2=Selected[i].fitness;
-                Dad=Selected[i];
-            }   
-        }
+        segmentedSelection(Selected);
         /*System.out.print("Best");
         System.out.println(bestValue);
         System.out.print("Worst");
@@ -270,6 +250,54 @@ public class EC {
             Offsring(Mom,Dad);
         
     }
+    public void Evaluate()
+    {
+        for  (int i = 0; i < size; i++) 
+        {
+           population[i].evaluate();
+           if (population[i].fitness<worstValue2)
+           {
+               worstValue2=population[i].fitness;
+               worstQueen2=i;
+           }else if (population[i].fitness<worstValue)
+           {
+               worstValue=population[i].fitness;
+               worstQueen=i;
+           }else
+           if (population[i].fitness>bestValue)
+           {
+               bestValue=population[i].fitness;
+               bestQueen=i;
+               /*System.out.print("Best queen: ");
+               System.out.println(Arrays.toString(population[i].board));*/
+           }
+        }
+        
+    }
+    /*public void Evaluate()
+    {
+        for  (int i = 0; i < size; i++) 
+        {
+           population[i].evaluate();
+           if (population[i].fitness<worstValue2)
+           {
+               worstValue2=population[i].fitness;
+               worstQueen2=i;
+           }else if (population[i].fitness<worstValue)
+           {
+               worstValue=population[i].fitness;
+               worstQueen=i;
+           }else
+           if (population[i].fitness>bestValue)
+           {
+               bestValue=population[i].fitness;
+               bestQueen=i;
+               /*System.out.print("Best queen: ");
+               System.out.println(Arrays.toString(population[i].board));
+           }
+        }
+        
+    }*/
     public void Evaluate()
     {
         for  (int i = 0; i < size; i++) 
@@ -327,6 +355,32 @@ public class EC {
        Recombine(Mom,Dad);
         
 
+    }
+
+    private void segmentedSelection(Queen[] Selected) 
+    {
+        Random random = new Random();
+         int chosen, limit, best1=-(k*k), best2=-(k*k); //Inidice del individuo seleecionado y
+                           //el tamano de las secciones
+        //Para evitar repetidos, se escogera un aletorio por secciones
+        limit= (int)(size/randSel);
+        Queen Mom = new Queen(k);
+        Queen Dad = new Queen(k);
+        for (int i=0; i<randSel; i++)
+        {
+            chosen= random.nextInt(limit)+limit*i;
+            Selected[i]=population[chosen];
+            if (Selected[i].fitness>best1)
+            {
+                best1=Selected[i].fitness;
+                Mom=Selected[i];
+            }   
+            else if (Selected[i].fitness>best2)
+            {
+                best2=Selected[i].fitness;
+                Dad=Selected[i];
+            }   
+        }
     }
     
 }
