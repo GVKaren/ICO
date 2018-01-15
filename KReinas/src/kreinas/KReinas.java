@@ -18,7 +18,7 @@ public class KReinas {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        int k=8;
+        int k=32;
         EC problem= new EC(k);
 
         problem.Start();

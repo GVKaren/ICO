@@ -23,7 +23,7 @@ public class Queen {
     public  Queen(int k)
     {
         board = new int[k];
-        
+        this.k=k;
         for  (int i = 0; i < board.length; i++) 
         {
            board[i]=i+1;

@@ -188,12 +188,15 @@ public class EC {
         if (son.fitness>worstValue2)
         {
             population[worstQueen2]=son;
-            //worstValue=princess.fitness;
+            worstValue2=son.fitness;
             //System.out.println("   Princess is better");
 
         }
         else if(son.fitness>worstValue)
+        {
             population[worstQueen]=son;
+            worstValue=son.fitness;
+        }
         Mutate(daughter);
         daughter.evaluate();
         if (daughter.fitness>worstValue2)
@@ -239,22 +242,27 @@ public class EC {
         //Se prepara el arreglo de los elegidos
         Queen[] Selected = new Queen[randSel];
         Random random = new Random();
-        segmentedSelection(Selected);
+       // segmentedSelection(Selected);
+        Selected = totalyRandomSelection(Selected);
         /*System.out.print("Best");
         System.out.println(bestValue);
         System.out.print("Worst");
         System.out.println(worstValue);
         System.out.println(Arrays.toString(population[bestQueen].board));*/
-        
+        Queen  Mom,Dad;
+        Mom=Selected[0];
+        Dad=Selected[1];
         if (random.nextFloat()<=rP)
             Offsring(Mom,Dad);
         
     }
+
     public void Evaluate()
     {
         for  (int i = 0; i < size; i++) 
         {
            population[i].evaluate();
+           
            if (population[i].fitness<worstValue2)
            {
                worstValue2=population[i].fitness;
@@ -268,56 +276,7 @@ public class EC {
            {
                bestValue=population[i].fitness;
                bestQueen=i;
-               /*System.out.print("Best queen: ");
-               System.out.println(Arrays.toString(population[i].board));*/
-           }
-        }
-        
-    }
-    /*public void Evaluate()
-    {
-        for  (int i = 0; i < size; i++) 
-        {
-           population[i].evaluate();
-           if (population[i].fitness<worstValue2)
-           {
-               worstValue2=population[i].fitness;
-               worstQueen2=i;
-           }else if (population[i].fitness<worstValue)
-           {
-               worstValue=population[i].fitness;
-               worstQueen=i;
-           }else
-           if (population[i].fitness>bestValue)
-           {
-               bestValue=population[i].fitness;
-               bestQueen=i;
-               /*System.out.print("Best queen: ");
-               System.out.println(Arrays.toString(population[i].board));
-           }
-        }
-        
-    }*/
-    public void Evaluate()
-    {
-        for  (int i = 0; i < size; i++) 
-        {
-           population[i].evaluate();
-           if (population[i].fitness<worstValue2)
-           {
-               worstValue2=population[i].fitness;
-               worstQueen2=i;
-           }else if (population[i].fitness<worstValue)
-           {
-               worstValue=population[i].fitness;
-               worstQueen=i;
-           }else
-           if (population[i].fitness>bestValue)
-           {
-               bestValue=population[i].fitness;
-               bestQueen=i;
-               /*System.out.print("Best queen: ");
-               System.out.println(Arrays.toString(population[i].board));*/
+
            }
         }
         
@@ -328,6 +287,9 @@ public class EC {
         {
             Selection();
             Evaluate();
+           /* if (bestValue<-1)
+            {System.out.print("best:   ");
+            System.out.println((population[bestQueen].fitness));}*/
         }
         
     }
@@ -356,7 +318,48 @@ public class EC {
         
 
     }
+    private Queen[] totalyRandomSelection(Queen[] Selected) 
+    {
+        Random random = new Random();
+         int chosen; //Inidice del individuo seleecionado
+        //Pueden existir repetidos
+        Queen aux;
 
+        for (int i=0; i<randSel; i++)
+        {
+            chosen= random.nextInt(size);
+            Selected[i]=population[chosen];
+            if (i>0 && Selected[i].fitness>Selected[0].fitness)
+            {
+                if (Selected[i].fitness<-4)
+                    i=i;
+                
+                aux= Selected[1];
+                if (i>1)
+                {
+                    Selected[1]=Selected[0];
+                    Selected[0]=Selected[i];
+                    Selected[i]=aux;
+                }
+                else
+                {
+                    Selected[1]=Selected[0];
+                    Selected[0]=aux;
+                }
+                
+            }   
+            else if (i>0 && Selected[i].fitness>Selected[1].fitness)
+            {
+                
+                aux= Selected[1];
+                Selected[1]=Selected[i];
+                Selected[i]=aux;
+            }   
+        }
+
+            
+        return Selected;
+    }
     private void segmentedSelection(Queen[] Selected) 
     {
         Random random = new Random();
