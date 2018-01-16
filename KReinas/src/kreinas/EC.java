@@ -162,16 +162,14 @@ public class EC {
          ///miembro de la poblacion
        
         Queen son, daughter;
-        son = new Queen (sonBase);
-        daughter= new Queen(daughterBase);
+        son = new Queen (sonBase, k);
+        daughter= new Queen(daughterBase, k);
         Mutate(son);
         son.evaluate();
         if (son.fitness>worstValue)
         {
             population[worstQueen]=son;
             worstValue=son.fitness;
-            
-            //System.out.println("   Princess is better");
 
         }
         else if(son.fitness>worstValue2)
@@ -208,13 +206,7 @@ public class EC {
         float  mutate= random.nextFloat();
         if (mutate<mP)
         {
-           int position1= random.nextInt(k);
-           int position2= random.nextInt(k);
-           int temp;
-           
-           temp=queen.board[position1];
-           queen.board[position1]=queen.board[position2];
-           queen.board[position2]=temp;
+           queen.Mutate();
            
            
         }
@@ -267,6 +259,9 @@ public class EC {
     }
     public void Iterate()
     {
+        long time_start, time_end;
+        long time;
+        time_start = System.currentTimeMillis();
         for(int i =0; i<iterations; i++)
         {
             Selection();
@@ -279,6 +274,11 @@ public class EC {
             }
 
         }
+        time_end = System.currentTimeMillis();
+             time= time_end - time_start;
+        System.out.print("Time needed:   ");
+                System.out.println(time);
+             
         
     }
     public void Start()

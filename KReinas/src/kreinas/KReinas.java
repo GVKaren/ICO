@@ -18,11 +18,12 @@ public class KReinas {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        int k=64;
-        int evaluations=30000;
+        int k=8;
+        int evaluations=10000;
+        
         EC problem= new EC(k, evaluations);
-
-        problem.Start();
+        for (int i=0; i<30;i++)
+            problem.Start();
         
     }
     

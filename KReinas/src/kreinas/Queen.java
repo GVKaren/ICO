@@ -31,8 +31,9 @@ public class Queen {
         shuffle(board);
 
     }
-     public  Queen(int[] position)
+     public  Queen(int[] position,int k)
     {
+        this.k=k;
         board = position;
 
     }
@@ -86,6 +87,21 @@ public class Queen {
         array[index] = array[i];
         array[i] = temp;
     }
+    }
+    
+    public void Mutate()
+    {
+        Random random = new Random();
+           int position1= random.nextInt(k);
+           int position2= random.nextInt(k);
+           int temp;
+           
+           temp=board[position1];
+           board[position1]=board[position2];
+           board[position2]=temp;
+           
+           
+        
     }
     
 }
