@@ -23,12 +23,14 @@ public class EC {
     int offspring=2; //Numero de hijos
     int randSel=5;   //Cantidad de elementos aleatorios
     int k=8;
+    int iterations=10000;
     int worstValue;
     int worstQueen;
     int worstValue2;
     int worstQueen2;
     int bestValue;
     int bestQueen;
+    boolean stop;
     FileWriter fichero = null;
     PrintWriter pw = null;
     
@@ -37,10 +39,13 @@ public class EC {
     /**
      * Default constructor with default values
      * @param queens Queens quantity
+     * @param evaluations Quantity of aptitude calculus
      */
-    public EC(int queens)
+    public EC(int queens, int evaluations)
     {
+        iterations=evaluations/2;
         k=queens;
+        
         
     }
     
@@ -82,17 +87,7 @@ public class EC {
         for  (int i = 1; i < size; i++) 
         {
            population[i]=new Queen(k);
-          /* population[i].evaluate();
-           if (population[i].fitness<worstValue)
-           {
-               worstValue=population[i].fitness;
-               worstQueen=i;
-           }
-           else if (population[i].fitness>bestValue)
-           {
-               bestValue=population[i].fitness;
-               bestQueen=i;
-           }*/
+           population[i].evaluate();
            
         }
         Evaluate();
@@ -132,12 +127,10 @@ public class EC {
                  g++;
              }
          }
-         if (b<k)
+         if (b<k)//Si es necesario llenar huecos
          ///AJUSTE PARA BUSCAR EN EL MENOR LUGAR los repetidos
-         
-//         if (pivot<(k/2))//Buscar en la primera mitad
          {
-             //Al hijo le conviene buscar en el papa
+             //hijo busca en papa
              int i=0;
              while (b<k)
              {
@@ -167,45 +160,34 @@ public class EC {
          }
          ///Se selecciona el mejor hijo para que sea el nuevo posible 
          ///miembro de la poblacion
-       /* Queen princess = new Queen(k);
-        if (princess.evaluate(sonBase)>princess.evaluate(daughterBase))
-            princess=new Queen(sonBase);
-        else
-            princess= new Queen(daughterBase);
-        princess.evaluate();
-        
-        /*System.out.println( pivot);
-        System.out.println(Arrays.toString(sonBase));
-        System.out.println(Arrays.toString(daughterBase));
-        System.out.print("   Princess aptitude: ");
-        System.out.println(princess.fitness);
-        return princess;*/
+       
         Queen son, daughter;
         son = new Queen (sonBase);
         daughter= new Queen(daughterBase);
         Mutate(son);
         son.evaluate();
-        if (son.fitness>worstValue2)
-        {
-            population[worstQueen2]=son;
-            worstValue2=son.fitness;
-            //System.out.println("   Princess is better");
-
-        }
-        else if(son.fitness>worstValue)
+        if (son.fitness>worstValue)
         {
             population[worstQueen]=son;
             worstValue=son.fitness;
+            
+            //System.out.println("   Princess is better");
+
+        }
+        else if(son.fitness>worstValue2)
+        {
+            population[worstQueen2]=son;
+            worstValue2=son.fitness;
         }
         Mutate(daughter);
         daughter.evaluate();
-        if (daughter.fitness>worstValue2)
+        if (daughter.fitness>worstValue)
         {
-            population[worstQueen2]=daughter;
+            population[worstQueen]=daughter;
 
         }
-        else if(daughter.fitness>worstValue)
-            population[worstQueen]=daughter;
+        else if(daughter.fitness>worstValue2)
+            population[worstQueen2]=daughter;
         
          
     }
@@ -261,21 +243,23 @@ public class EC {
     {
         for  (int i = 0; i < size; i++) 
         {
-           population[i].evaluate();
-           
-           if (population[i].fitness<worstValue2)
+           if (population[i].fitness<worstValue)
+           {
+               worstValue2=worstValue;
+               worstQueen2=worstQueen;
+               worstValue=population[i].fitness;
+               worstQueen=i;
+           }else if (population[i].fitness<worstValue2)
            {
                worstValue2=population[i].fitness;
                worstQueen2=i;
-           }else if (population[i].fitness<worstValue)
-           {
-               worstValue=population[i].fitness;
-               worstQueen=i;
            }else
            if (population[i].fitness>bestValue)
            {
                bestValue=population[i].fitness;
                bestQueen=i;
+               
+                   
 
            }
         }
@@ -283,13 +267,17 @@ public class EC {
     }
     public void Iterate()
     {
-        for(int i =0; i<10000; i++)
+        for(int i =0; i<iterations; i++)
         {
             Selection();
             Evaluate();
-           /* if (bestValue<-1)
-            {System.out.print("best:   ");
-            System.out.println((population[bestQueen].fitness));}*/
+            if (bestValue==0)
+            {
+                System.out.print("Iterations needed:   ");
+                System.out.println(i);
+                break;
+            }
+
         }
         
     }
