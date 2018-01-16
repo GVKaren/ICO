@@ -30,6 +30,8 @@ public class EC {
     int worstQueen2;
     int bestValue;
     int bestQueen;
+    double[] stadistics= new double [3];//Guarda los valores de: cant de iteraciones, tiempo requerido, mejor aptitud
+    long time;
     boolean stop;
     FileWriter fichero = null;
     PrintWriter pw = null;
@@ -260,7 +262,8 @@ public class EC {
     public void Iterate()
     {
         long time_start, time_end;
-        long time;
+        
+        int needed=iterations;
         time_start = System.currentTimeMillis();
         for(int i =0; i<iterations; i++)
         {
@@ -268,24 +271,26 @@ public class EC {
             Evaluate();
             if (bestValue==0)
             {
-                System.out.print("Iterations needed:   ");
-                System.out.println(i);
+                needed=i;
                 break;
             }
 
         }
         time_end = System.currentTimeMillis();
              time= time_end - time_start;
-        System.out.print("Time needed:   ");
-                System.out.println(time);
-             
+
+        stadistics[0]=needed;
+        stadistics[1]=time;
+        
         
     }
-    public void Start()
+    
+    public double[] Start()
     {
        Initiation();
        Iterate();
        Evaluate();
+       stadistics[2]=bestValue;
        System.out.print("Best of all:   ");
        
         System.out.println(Arrays.toString(population[bestQueen].board));
@@ -293,6 +298,7 @@ public class EC {
        
         System.out.println((population[bestQueen].fitness));
        
+        return stadistics;
     }
     /**
      * Creates and mutates a new chest board (princess). If its better, repleace
@@ -373,5 +379,5 @@ public class EC {
             }   
         }
     }
-    
+   
 }
