@@ -30,6 +30,8 @@ public class EC {
     int worstQueen2;
     int bestValue;
     int bestQueen;
+    int lbv=-100;//valor que eliminare
+    boolean activate = false;
     double[] stadistics= new double [3];//Guarda los valores de: cant de iteraciones, tiempo requerido, mejor aptitud
     long time;
     boolean stop;
@@ -168,27 +170,31 @@ public class EC {
         daughter= new Queen(daughterBase, k);
         Mutate(son);
         son.evaluate();
-        if (son.fitness>worstValue)
-        {
-            population[worstQueen]=son;
-            worstValue=son.fitness;
-
-        }
-        else if(son.fitness>worstValue2)
+        if (son.fitness>worstValue2)
         {
             population[worstQueen2]=son;
             worstValue2=son.fitness;
-        }
-        Mutate(daughter);
-        daughter.evaluate();
-        if (daughter.fitness>worstValue)
-        {
-            population[worstQueen]=daughter;
 
         }
-        else if(daughter.fitness>worstValue2)
+        else if(son.fitness>worstValue)
+        {
+            population[worstQueen]=son;
+            worstValue=son.fitness;
+        }
+        //Evaluate();
+        Mutate(daughter);
+        daughter.evaluate();
+        if (daughter.fitness>worstValue2)
+        {
             population[worstQueen2]=daughter;
-        
+            worstValue2=daughter.fitness;
+
+        }
+        else if(daughter.fitness>worstValue)
+        {
+            population[worstQueen]=daughter;
+            worstValue=daughter.fitness;
+        }   
          
     }
     boolean Exist(int[] array, int value)
@@ -220,11 +226,6 @@ public class EC {
         Random random = new Random();
        // segmentedSelection(Selected);
         Selected = totalyRandomSelection(Selected);
-        /*System.out.print("Best");
-        System.out.println(bestValue);
-        System.out.print("Worst");
-        System.out.println(worstValue);
-        System.out.println(Arrays.toString(population[bestQueen].board));*/
         Queen  Mom,Dad;
         Mom=Selected[0];
         Dad=Selected[1];
@@ -267,8 +268,15 @@ public class EC {
         time_start = System.currentTimeMillis();
         for(int i =0; i<iterations; i++)
         {
+            lbv=bestValue;
             Selection();
             Evaluate();
+            if (i>iterations*.99)
+            {
+             System.out.print("Best of all:   ");
+              System.out.println(bestValue);
+              activate=true;
+            }
             if (bestValue==0)
             {
                 needed=i;
@@ -324,10 +332,7 @@ public class EC {
             chosen= random.nextInt(size);
             Selected[i]=population[chosen];
             if (i>0 && Selected[i].fitness>Selected[0].fitness)
-            {
-                if (Selected[i].fitness<-4)
-                    i=i;
-                
+            {                
                 aux= Selected[1];
                 if (i>1)
                 {
@@ -349,8 +354,14 @@ public class EC {
                 Selected[1]=Selected[i];
                 Selected[i]=aux;
             }   
+            
         }
-
+        /*if (activate)
+        {
+            System.out.println("seleccionados");
+                for (int j=0; j<5; j++)
+                System.out.println(Arrays.toString(Selected[j].board));
+        }*/
             
         return Selected;
     }

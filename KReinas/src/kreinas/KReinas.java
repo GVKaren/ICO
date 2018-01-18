@@ -14,8 +14,8 @@ import java.util.Arrays;
  * @author katthyren
  */
 public class KReinas {
-       static int k=128;
-       static int evaluations=50000;
+       static int k=64;
+       static int evaluations=30000;
        static int repeat=30;
        static double[] time= new double[repeat];
        static double[] iterations= new double[repeat];
